@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+    <link rel="stylesheet" href="codemirror.css">
+    <script src=codemirror.js></script>
+    <script src="clike.js"></script>
+
+
+    <!--主题-->
+    <link rel="stylesheet" href="theme/seti.css">
+
+    <!--快捷键-->
+    <link rel="stylesheet" href="addon/dialog/dialog.css">
+    <script src="keymap/vim.js"></script>
+    <script src="addon/search/searchcursor.js"></script>
+    <script src="addon/dialog//dialog.js"></script>
+
+    <!--代码折叠-->
+    <link rel="stylesheet" href="addon/fold/foldgutter.css">
+    <script src="addon/fold/foldcode.js"></script>
+    <script src="addon/fold/foldgutter.js"></script>
+    <script src="addon/fold/brace-fold.js"></script>
+    <script src="addon/fold/comment-fold.js"></script>
+
+    <!--括号匹配-->
+    <script src="addon/edit/matchbrackets.js"></script>
+
+    <!--全屏-->
+    <link rel="stylesheet" href="addon/display/fullscreen.js">
+    <script src="addon/display/fullscreen.js"></script>
+
+    <link rel="stylesheet" href="addon/hint/show-hint.css">
+    <script src="addon/hint/show-hint.js"></script>
+    <script src="addon/hint/anyword-hint.js"></script>
+
+    <head>
+        <title>IDE</title>
+    </head>
+
+    <body>
+            <textarea id="code" name="code" rows="5" >
+package main;
+
+public class HelloWorld {
+    public static void main(String[] args){
+        System.out.println("Hello IDE");
+    }
+    public void helle(String name){
+        System.out.println("hello" + name);
+    }
+}
+            </textarea>
+    </body>
+
+    <script type="text/javascript">
+        var editor=CodeMirror.fromTextArea(document.getElementById("code"),{
+                mode:"text/x-java", //代码高亮
+                lineNumbers:true,   //行号
+                theme:"seti",       //主题
+                keyMap:"vim",       //快捷键
+                lineWrapping:true,  //代码折叠
+                foldGutter:true,    //代码折叠
+                gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                matchBrackets:true, //括号匹配
+                extraKeys:{"Ctrl-Space":"autocomplete"},
+        });
+    </script>
+
+    <style type="text/css">
+    .CodeMirror{
+        font-size: 20px;
+    }
+    </style>
+</html>
