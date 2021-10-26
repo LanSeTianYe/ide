@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <link rel="stylesheet" href="codemirror.css">
     <script src=codemirror.js></script>
     <script src="clike.js"></script>
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="addon/dialog/dialog.css">
     <script src="keymap/vim.js"></script>
     <script src="addon/search/searchcursor.js"></script>
-    <script src="addon/dialog//dialog.js"></script>
+    <script src="addon/dialog/dialog.js"></script>
 
     <!--代码折叠-->
     <link rel="stylesheet" href="addon/fold/foldgutter.css">
@@ -38,7 +38,8 @@
     </head>
 
     <body>
-            <textarea id="code" name="code" rows="5" >
+    <label for="code" style="display: none"></label>
+    <textarea id="code" name="code" rows="5" >
 package main;
 
 public class HelloWorld {
