@@ -1,4 +1,4 @@
-package main
+package protocol
 
 import "encoding/json"
 
@@ -853,7 +853,7 @@ type CompletionItem struct {
 	/**
 	 * A human-readable string that represents a doc-comment.
 	 */
-	Documentation string/*string | MarkupContent*/ `json:"documentation,omitempty"`
+	Documentation string /*string | MarkupContent*/ `json:"documentation,omitempty"`
 	/**
 	 * Indicates if this item is deprecated.
 	 * @deprecated Use `tags` instead.
@@ -924,7 +924,7 @@ type CompletionItem struct {
 	 *
 	 * @since 3.16.0 additional type `InsertReplaceEdit`
 	 */
-	TextEdit *TextEdit/*TextEdit | InsertReplaceEdit*/ `json:"textEdit,omitempty"`
+	TextEdit *TextEdit /*TextEdit | InsertReplaceEdit*/ `json:"textEdit,omitempty"`
 	/**
 	 * An optional array of additional [text edits](#TextEdit) that are applied when
 	 * selecting this completion. Edits must not overlap (including the same insert position)
@@ -1308,7 +1308,7 @@ type Diagnostic struct {
 	/**
 	 * The diagnostic's code, which usually appear in the user interface.
 	 */
-	Code interface{}/*integer | string*/ `json:"code,omitempty"`
+	Code interface{} /*integer | string*/ `json:"code,omitempty"`
 	/**
 	 * An optional property to describe the error code.
 	 *
@@ -2391,7 +2391,7 @@ type Hover struct {
 	/**
 	 * The hover's content
 	 */
-	Contents MarkupContent/*MarkupContent | MarkedString | MarkedString[]*/ `json:"contents"`
+	Contents MarkupContent /*MarkupContent | MarkedString | MarkedString[]*/ `json:"contents"`
 	/**
 	 * An optional range
 	 */
@@ -2469,7 +2469,7 @@ type InitializeParams struct {
 	 * The process Id of the parent process that started
 	 * the server.
 	 */
-	ProcessID int32/*integer | null*/ `json:"processId"`
+	ProcessID int32 /*integer | null*/ `json:"processId"`
 	/**
 	 * Information about the client
 	 *
@@ -2502,7 +2502,7 @@ type InitializeParams struct {
 	 *
 	 * @deprecated in favour of rootUri.
 	 */
-	RootPath string/*string | null*/ `json:"rootPath,omitempty"`
+	RootPath string /*string | null*/ `json:"rootPath,omitempty"`
 	/**
 	 * The rootUri of the workspace. Is null if no
 	 * folder is open. If both `rootPath` and `rootUri` are set
@@ -2510,7 +2510,7 @@ type InitializeParams struct {
 	 *
 	 * @deprecated in favour of workspaceFolders.
 	 */
-	RootURI DocumentURI/*DocumentUri | null*/ `json:"rootUri"`
+	RootURI DocumentURI /*DocumentUri | null*/ `json:"rootUri"`
 	/**
 	 * The capabilities provided by the client (editor or tool)
 	 */
@@ -2522,11 +2522,11 @@ type InitializeParams struct {
 	/**
 	 * The initial trace setting. If omitted trace is disabled ('off').
 	 */
-	Trace string/*'off' | 'messages' | 'verbose'*/ `json:"trace,omitempty"`
+	Trace string /*'off' | 'messages' | 'verbose'*/ `json:"trace,omitempty"`
 	/**
 	 * The actual configured workspace folders.
 	 */
-	WorkspaceFolders []WorkspaceFolder/*WorkspaceFolder[] | null*/ `json:"workspaceFolders"`
+	WorkspaceFolders []WorkspaceFolder /*WorkspaceFolder[] | null*/ `json:"workspaceFolders"`
 }
 
 /**
@@ -2856,7 +2856,7 @@ type OptionalVersionedTextDocumentIdentifier struct {
 	 * `null` to indicate that the version is unknown and the content on disk is the
 	 * truth (as specified with document content ownership).
 	 */
-	Version int32/*integer | null*/ `json:"version"`
+	Version int32 /*integer | null*/ `json:"version"`
 	TextDocumentIdentifier
 }
 
@@ -2875,12 +2875,12 @@ type ParameterInformation struct {
 	 * *Note*: a label of type string should be a substring of its containing signature label.
 	 * Its intended use case is to highlight the parameter label part in the `SignatureInformation.label`.
 	 */
-	Label string/*string | [uinteger, uinteger]*/ `json:"label"`
+	Label string /*string | [uinteger, uinteger]*/ `json:"label"`
 	/**
 	 * The human-readable doc-comment of this signature. Will be shown
 	 * in the UI but can be omitted.
 	 */
-	Documentation string/*string | MarkupContent*/ `json:"documentation,omitempty"`
+	Documentation string /*string | MarkupContent*/ `json:"documentation,omitempty"`
 }
 
 type PartialResultParams struct {
@@ -3133,7 +3133,7 @@ type RelatedFullDocumentDiagnosticReport struct {
 	 *
 	 * @since 3.17.0 - proposed state
 	 */
-	RelatedDocuments map[string]interface{}/*[uri: string ** DocumentUri *]: FullDocumentDiagnosticReport | UnchangedDocumentDiagnosticReport;*/ `json:"relatedDocuments,omitempty"`
+	RelatedDocuments map[string]interface{} /*[uri: string ** DocumentUri *]: FullDocumentDiagnosticReport | UnchangedDocumentDiagnosticReport;*/ `json:"relatedDocuments,omitempty"`
 	FullDocumentDiagnosticReport
 }
 
@@ -3152,7 +3152,7 @@ type RelatedUnchangedDocumentDiagnosticReport struct {
 	 *
 	 * @since 3.17.0 - proposed state
 	 */
-	RelatedDocuments map[string]interface{}/*[uri: string ** DocumentUri *]: FullDocumentDiagnosticReport | UnchangedDocumentDiagnosticReport;*/ `json:"relatedDocuments,omitempty"`
+	RelatedDocuments map[string]interface{} /*[uri: string ** DocumentUri *]: FullDocumentDiagnosticReport | UnchangedDocumentDiagnosticReport;*/ `json:"relatedDocuments,omitempty"`
 	UnchangedDocumentDiagnosticReport
 }
 
@@ -3393,12 +3393,12 @@ type SemanticTokensClientCapabilities struct {
 		 * The client will send the `textDocument/semanticTokens/range` request if
 		 * the server provides a corresponding handler.
 		 */
-		Range bool/*boolean | {		}*/ `json:"range,omitempty"`
+		Range bool /*boolean | {		}*/ `json:"range,omitempty"`
 		/**
 		 * The client will send the `textDocument/semanticTokens/full` request if
 		 * the server provides a corresponding handler.
 		 */
-		Full interface{}/*boolean | <elided struct>*/ `json:"full,omitempty"`
+		Full interface{} /*boolean | <elided struct>*/ `json:"full,omitempty"`
 	} `json:"requests"`
 	/**
 	 * The token types that the client supports.
@@ -3494,11 +3494,11 @@ type SemanticTokensOptions struct {
 	 * Server supports providing semantic tokens for a specific range
 	 * of a document.
 	 */
-	Range bool/*boolean | {	}*/ `json:"range,omitempty"`
+	Range bool /*boolean | {	}*/ `json:"range,omitempty"`
 	/**
 	 * Server supports providing semantic tokens for a full document.
 	 */
-	Full interface{}/*boolean | <elided struct>*/ `json:"full,omitempty"`
+	Full interface{} /*boolean | <elided struct>*/ `json:"full,omitempty"`
 	WorkDoneProgressOptions
 }
 
@@ -3560,7 +3560,7 @@ type ServerCapabilities struct {
 	 * Defines how text documents are synced. Is either a detailed structure defining each notification or
 	 * for backwards compatibility the TextDocumentSyncKind number.
 	 */
-	TextDocumentSync interface{}/*TextDocumentSyncOptions | TextDocumentSyncKind*/ `json:"textDocumentSync,omitempty"`
+	TextDocumentSync interface{} /*TextDocumentSyncOptions | TextDocumentSyncKind*/ `json:"textDocumentSync,omitempty"`
 	/**
 	 * The server provides completion support.
 	 */
@@ -3568,7 +3568,7 @@ type ServerCapabilities struct {
 	/**
 	 * The server provides hover support.
 	 */
-	HoverProvider bool/*boolean | HoverOptions*/ `json:"hoverProvider,omitempty"`
+	HoverProvider bool /*boolean | HoverOptions*/ `json:"hoverProvider,omitempty"`
 	/**
 	 * The server provides signature help support.
 	 */
@@ -3576,37 +3576,37 @@ type ServerCapabilities struct {
 	/**
 	 * The server provides Goto Declaration support.
 	 */
-	DeclarationProvider interface{}/* bool | DeclarationOptions | DeclarationRegistrationOptions*/ `json:"declarationProvider,omitempty"`
+	DeclarationProvider interface{} /* bool | DeclarationOptions | DeclarationRegistrationOptions*/ `json:"declarationProvider,omitempty"`
 	/**
 	 * The server provides goto definition support.
 	 */
-	DefinitionProvider bool/*boolean | DefinitionOptions*/ `json:"definitionProvider,omitempty"`
+	DefinitionProvider bool /*boolean | DefinitionOptions*/ `json:"definitionProvider,omitempty"`
 	/**
 	 * The server provides Goto Type Definition support.
 	 */
-	TypeDefinitionProvider interface{}/* bool | TypeDefinitionOptions | TypeDefinitionRegistrationOptions*/ `json:"typeDefinitionProvider,omitempty"`
+	TypeDefinitionProvider interface{} /* bool | TypeDefinitionOptions | TypeDefinitionRegistrationOptions*/ `json:"typeDefinitionProvider,omitempty"`
 	/**
 	 * The server provides Goto Implementation support.
 	 */
-	ImplementationProvider interface{}/* bool | ImplementationOptions | ImplementationRegistrationOptions*/ `json:"implementationProvider,omitempty"`
+	ImplementationProvider interface{} /* bool | ImplementationOptions | ImplementationRegistrationOptions*/ `json:"implementationProvider,omitempty"`
 	/**
 	 * The server provides find references support.
 	 */
-	ReferencesProvider bool/*boolean | ReferenceOptions*/ `json:"referencesProvider,omitempty"`
+	ReferencesProvider bool /*boolean | ReferenceOptions*/ `json:"referencesProvider,omitempty"`
 	/**
 	 * The server provides document highlight support.
 	 */
-	DocumentHighlightProvider bool/*boolean | DocumentHighlightOptions*/ `json:"documentHighlightProvider,omitempty"`
+	DocumentHighlightProvider bool /*boolean | DocumentHighlightOptions*/ `json:"documentHighlightProvider,omitempty"`
 	/**
 	 * The server provides document symbol support.
 	 */
-	DocumentSymbolProvider bool/*boolean | DocumentSymbolOptions*/ `json:"documentSymbolProvider,omitempty"`
+	DocumentSymbolProvider bool /*boolean | DocumentSymbolOptions*/ `json:"documentSymbolProvider,omitempty"`
 	/**
 	 * The server provides code actions. CodeActionOptions may only be
 	 * specified if the client states that it supports
 	 * `codeActionLiteralSupport` in its initial `initialize` request.
 	 */
-	CodeActionProvider interface{}/*boolean | CodeActionOptions*/ `json:"codeActionProvider,omitempty"`
+	CodeActionProvider interface{} /*boolean | CodeActionOptions*/ `json:"codeActionProvider,omitempty"`
 	/**
 	 * The server provides code lens.
 	 */
@@ -3618,19 +3618,19 @@ type ServerCapabilities struct {
 	/**
 	 * The server provides color provider support.
 	 */
-	ColorProvider interface{}/* bool | DocumentColorOptions | DocumentColorRegistrationOptions*/ `json:"colorProvider,omitempty"`
+	ColorProvider interface{} /* bool | DocumentColorOptions | DocumentColorRegistrationOptions*/ `json:"colorProvider,omitempty"`
 	/**
 	 * The server provides workspace symbol support.
 	 */
-	WorkspaceSymbolProvider bool/*boolean | WorkspaceSymbolOptions*/ `json:"workspaceSymbolProvider,omitempty"`
+	WorkspaceSymbolProvider bool /*boolean | WorkspaceSymbolOptions*/ `json:"workspaceSymbolProvider,omitempty"`
 	/**
 	 * The server provides document formatting.
 	 */
-	DocumentFormattingProvider bool/*boolean | DocumentFormattingOptions*/ `json:"documentFormattingProvider,omitempty"`
+	DocumentFormattingProvider bool /*boolean | DocumentFormattingOptions*/ `json:"documentFormattingProvider,omitempty"`
 	/**
 	 * The server provides document range formatting.
 	 */
-	DocumentRangeFormattingProvider bool/*boolean | DocumentRangeFormattingOptions*/ `json:"documentRangeFormattingProvider,omitempty"`
+	DocumentRangeFormattingProvider bool /*boolean | DocumentRangeFormattingOptions*/ `json:"documentRangeFormattingProvider,omitempty"`
 	/**
 	 * The server provides document formatting on typing.
 	 */
@@ -3640,15 +3640,15 @@ type ServerCapabilities struct {
 	 * specified if the client states that it supports
 	 * `prepareSupport` in its initial `initialize` request.
 	 */
-	RenameProvider interface{}/*boolean | RenameOptions*/ `json:"renameProvider,omitempty"`
+	RenameProvider interface{} /*boolean | RenameOptions*/ `json:"renameProvider,omitempty"`
 	/**
 	 * The server provides folding provider support.
 	 */
-	FoldingRangeProvider interface{}/* bool | FoldingRangeOptions | FoldingRangeRegistrationOptions*/ `json:"foldingRangeProvider,omitempty"`
+	FoldingRangeProvider interface{} /* bool | FoldingRangeOptions | FoldingRangeRegistrationOptions*/ `json:"foldingRangeProvider,omitempty"`
 	/**
 	 * The server provides selection range support.
 	 */
-	SelectionRangeProvider interface{}/* bool | SelectionRangeOptions | SelectionRangeRegistrationOptions*/ `json:"selectionRangeProvider,omitempty"`
+	SelectionRangeProvider interface{} /* bool | SelectionRangeOptions | SelectionRangeRegistrationOptions*/ `json:"selectionRangeProvider,omitempty"`
 	/**
 	 * The server provides execute command support.
 	 */
@@ -3658,19 +3658,19 @@ type ServerCapabilities struct {
 	 *
 	 * @since 3.16.0
 	 */
-	CallHierarchyProvider interface{}/* bool | CallHierarchyOptions | CallHierarchyRegistrationOptions*/ `json:"callHierarchyProvider,omitempty"`
+	CallHierarchyProvider interface{} /* bool | CallHierarchyOptions | CallHierarchyRegistrationOptions*/ `json:"callHierarchyProvider,omitempty"`
 	/**
 	 * The server provides linked editing range support.
 	 *
 	 * @since 3.16.0
 	 */
-	LinkedEditingRangeProvider interface{}/* bool | LinkedEditingRangeOptions | LinkedEditingRangeRegistrationOptions*/ `json:"linkedEditingRangeProvider,omitempty"`
+	LinkedEditingRangeProvider interface{} /* bool | LinkedEditingRangeOptions | LinkedEditingRangeRegistrationOptions*/ `json:"linkedEditingRangeProvider,omitempty"`
 	/**
 	 * The server provides semantic tokens support.
 	 *
 	 * @since 3.16.0
 	 */
-	SemanticTokensProvider interface{}/*SemanticTokensOptions | SemanticTokensRegistrationOptions*/ `json:"semanticTokensProvider,omitempty"`
+	SemanticTokensProvider interface{} /*SemanticTokensOptions | SemanticTokensRegistrationOptions*/ `json:"semanticTokensProvider,omitempty"`
 	/**
 	 * The workspace server capabilities
 	 */
@@ -3680,7 +3680,7 @@ type ServerCapabilities struct {
 	 *
 	 * @since 3.16.0
 	 */
-	MonikerProvider interface{}/* bool | MonikerOptions | MonikerRegistrationOptions*/ `json:"monikerProvider,omitempty"`
+	MonikerProvider interface{} /* bool | MonikerOptions | MonikerRegistrationOptions*/ `json:"monikerProvider,omitempty"`
 	/**
 	 * Experimental server capabilities.
 	 */
@@ -3808,12 +3808,12 @@ type SignatureHelp struct {
 	 * The active signature. Set to `null` if no
 	 * signatures exist.
 	 */
-	ActiveSignature uint32/*uinteger | null*/ `json:"activeSignature"`
+	ActiveSignature uint32 /*uinteger | null*/ `json:"activeSignature"`
 	/**
 	 * The active parameter of the active signature. Set to `null`
 	 * if the active signature has no parameters.
 	 */
-	ActiveParameter uint32/*uinteger | null*/ `json:"activeParameter"`
+	ActiveParameter uint32 /*uinteger | null*/ `json:"activeParameter"`
 }
 
 /**
@@ -3954,7 +3954,7 @@ type SignatureInformation struct {
 	 * The human-readable doc-comment of this signature. Will be shown
 	 * in the UI but can be omitted.
 	 */
-	Documentation string/*string | MarkupContent*/ `json:"documentation,omitempty"`
+	Documentation string /*string | MarkupContent*/ `json:"documentation,omitempty"`
 	/**
 	 * The parameters of this signature.
 	 */
@@ -4204,7 +4204,7 @@ type TextDocumentEdit struct {
 	 * @since 3.16.0 - support for AnnotatedTextEdit. This is guarded using a
 	 * client capability.
 	 */
-	Edits []TextEdit/*TextEdit | AnnotatedTextEdit*/ `json:"edits"`
+	Edits []TextEdit /*TextEdit | AnnotatedTextEdit*/ `json:"edits"`
 }
 
 /**
@@ -4324,7 +4324,7 @@ type TextDocumentSyncOptions struct {
 	 * If present save notifications are sent to the server. If omitted the notification should not be
 	 * sent.
 	 */
-	Save SaveOptions/*boolean | SaveOptions*/ `json:"save,omitempty"`
+	Save SaveOptions /*boolean | SaveOptions*/ `json:"save,omitempty"`
 }
 
 /**
@@ -4690,7 +4690,7 @@ type WorkspaceEdit struct {
 	/**
 	 * Holds changes to existing resources.
 	 */
-	Changes map[string][]TextEdit/*[uri: string]: TextEdit[];*/ `json:"changes,omitempty"`
+	Changes map[string][]TextEdit /*[uri: string]: TextEdit[];*/ `json:"changes,omitempty"`
 	/**
 	 * Depending on the client capability `workspace.workspaceEdit.resourceOperations` document changes
 	 * are either an array of `TextDocumentEdit`s to express changes to n different text documents
@@ -4703,7 +4703,7 @@ type WorkspaceEdit struct {
 	 * If a client neither supports `documentChanges` nor `workspace.workspaceEdit.resourceOperations` then
 	 * only plain `TextEdit`s using the `changes` property are supported.
 	 */
-	DocumentChanges []TextDocumentEdit/*TextDocumentEdit | CreateFile | RenameFile | DeleteFile*/ `json:"documentChanges,omitempty"`
+	DocumentChanges []TextDocumentEdit /*TextDocumentEdit | CreateFile | RenameFile | DeleteFile*/ `json:"documentChanges,omitempty"`
 	/**
 	 * A map of change annotations that can be referenced in `AnnotatedTextEdit`s or create, rename and
 	 * delete file / folder operations.
@@ -4712,7 +4712,7 @@ type WorkspaceEdit struct {
 	 *
 	 * @since 3.16.0
 	 */
-	ChangeAnnotations map[string]ChangeAnnotationIdentifier/*[id: string * ChangeAnnotationIdentifier *]: ChangeAnnotation;*/ `json:"changeAnnotations,omitempty"`
+	ChangeAnnotations map[string]ChangeAnnotationIdentifier /*[id: string * ChangeAnnotationIdentifier *]: ChangeAnnotation;*/ `json:"changeAnnotations,omitempty"`
 }
 
 type WorkspaceEditClientCapabilities struct {
@@ -4821,7 +4821,7 @@ type WorkspaceFullDocumentDiagnosticReport struct {
 	 * The version number for which the diagnostics are reported.
 	 * If the document is not marked as open `null` can be provided.
 	 */
-	Version int32/*integer | null*/ `json:"version"`
+	Version int32 /*integer | null*/ `json:"version"`
 	FullDocumentDiagnosticReport
 }
 
@@ -4897,7 +4897,7 @@ type WorkspaceUnchangedDocumentDiagnosticReport struct {
 	 * The version number for which the diagnostics are reported.
 	 * If the document is not marked as open `null` can be provided.
 	 */
-	Version int32/*integer | null*/ `json:"version"`
+	Version int32 /*integer | null*/ `json:"version"`
 	UnchangedDocumentDiagnosticReport
 }
 
@@ -5520,7 +5520,7 @@ type WorkspaceFolders4Gn struct {
 	 * side. The ID can be used to unregister for these events
 	 * using the `client/unregisterCapability` request.
 	 */
-	ChangeNotifications string/*string | boolean*/ `json:"changeNotifications,omitempty"`
+	ChangeNotifications string /*string | boolean*/ `json:"changeNotifications,omitempty"`
 }
 type Workspace5Gn struct {
 	/**
@@ -5617,7 +5617,7 @@ type WorkspaceFolders7Gn struct {
 	 * side. The ID can be used to unregister for these events
 	 * using the `client/unregisterCapability` request.
 	 */
-	ChangeNotifications string/*string | boolean*/ `json:"changeNotifications,omitempty"`
+	ChangeNotifications string /*string | boolean*/ `json:"changeNotifications,omitempty"`
 }
 type Workspace8Gn struct {
 	/**
