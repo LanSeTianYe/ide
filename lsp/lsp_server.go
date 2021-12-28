@@ -11,6 +11,11 @@ import (
 	"sync"
 )
 
+const (
+	workSpaceName = "test"
+	workSpaceURI  = "file:///home/xiaotian/test"
+)
+
 var log = logger.Get()
 
 type ServerConfig struct {
@@ -106,67 +111,72 @@ func (lsp *LanguageServer) InitWorkSpace(name, uri string) {
 	log.Infof("LanguageServer InitWorkSpace success")
 }
 
-func (lsp *LanguageServer) DidOpenTextDocument() {
+func (lsp *LanguageServer) DidOpenTextDocument(url, text string) {
 	log.Infof("DidOpenTextDocument start")
 	didOpenParam := protocol.DidOpenTextDocumentParams{}
-	didOpenParam.TextDocument.URI = "file://test//hello.go"
+	didOpenParam.TextDocument.URI = protocol.DocumentURI(url)
 	didOpenParam.TextDocument.Version = 0
 	didOpenParam.TextDocument.LanguageID = "go"
-	didOpenParam.TextDocument.Text = "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n"
+	didOpenParam.TextDocument.Text = text
 	err := lsp.rpcConn.Call(lsp.ctx, "textDocument/didOpen", didOpenParam, nil, nil)
 	if err != nil {
 		log.Errorf("DidOpenTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
 	}
-
-	didOpenParam = protocol.DidOpenTextDocumentParams{}
-	didOpenParam.TextDocument.URI = "file://test//go.mod"
-	didOpenParam.TextDocument.Version = 0
-	didOpenParam.TextDocument.LanguageID = "go"
-	didOpenParam.TextDocument.Text = "module hello\\n\\ngo 1.16\\n"
-	err = lsp.rpcConn.Call(lsp.ctx, "textDocument/didOpen", didOpenParam, nil, nil)
-	if err != nil {
-		log.Errorf("DidOpenTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
-	}
-	log.Infof("DidOpenTextDocument success")
 }
 
-func (lsp *LanguageServer) DidSaveTextDocument() {
+func (lsp *LanguageServer) DidSaveTextDocument(url, data string) {
 	log.Infof("DidSaveTextDocument start")
 	didSaveParam := protocol.DidSaveTextDocumentParams{}
-	didSaveParam.TextDocument.URI = "file://test//hello.go"
-	data := "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n"
+	didSaveParam.TextDocument.URI = protocol.DocumentURI(url)
 	didSaveParam.Text = &data
 	err := lsp.rpcConn.Call(lsp.ctx, "textDocument/didSave", didSaveParam, nil, nil)
 	if err != nil {
 		log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
 	}
 
-	didSaveParam = protocol.DidSaveTextDocumentParams{}
-	didSaveParam.TextDocument.URI = "file://test//hello.go"
-	data = "module hello\\n\\ngo 1.16\\n"
-	didSaveParam.Text = &data
-	err = lsp.rpcConn.Call(lsp.ctx, "textDocument/didSave", didSaveParam, nil, nil)
-	if err != nil {
-		log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
-	}
-	log.Infof("DidSaveTextDocument success")
+	//didSaveParam = protocol.DidSaveTextDocumentParams{}
+	//didSaveParam.TextDocument.URI = "file://test//go.mod"
+	//data = "module hello\\n\\ngo 1.16\\n"
+	//didSaveParam.Text = &data
+	//err = lsp.rpcConn.Call(lsp.ctx, "textDocument/didSave", didSaveParam, nil, nil)
+	//if err != nil {
+	//	log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
+	//}
+	//log.Infof("DidSaveTextDocument success")
 }
 
-func (lsp *LanguageServer) ExecuteGoModTidy() {
+func (lsp *LanguageServer) ExecuteGoModTidy(uri string) {
 	log.Infof("ExecuteGoModTidy start")
 
 	executeParams := protocol.ExecuteCommandParams{}
 	executeParams.Command = "gopls.tidy"
-	executeParams.Arguments = []json.RawMessage{[]byte(`{"URI":"file://test"}`)}
+	executeParams.Arguments = []json.RawMessage{[]byte(`{"URI":"file:///home/xiaotian/test"}`)}
 	executeParams.WorkDoneToken = "11111111111111111"
 	response := make(map[string]interface{})
-	//executeParams.Arguments = []json.RawMessage{[]byte("[version]")}
 	err := lsp.rpcConn.Call(lsp.ctx, "workspace/executeCommand", &executeParams, &response, nil)
 	if err != nil {
 		log.Errorf("call json rpc method [workspace/executeCommand gopls.tidy] failed. err: %s", err)
 	}
 
 	log.Infof("ExecuteGoModTidy success: %s", pretty.Sprint(response))
+}
+
+func (lsp *LanguageServer) Completion(uri string, line uint32, character uint32) {
+	////自动补全
+
+	completionParams := protocol.CompletionParams{}
+	completionParams.WorkDoneToken = "333333333333333333333"
+	completionParams.TextDocument.URI = protocol.DocumentURI(uri)
+	completionParams.Position.Line = line
+	completionParams.Position.Character = character
+	log.Infof("textDocument/completion request: %s", pretty.Sprint(completionParams))
+	completionList := protocol.CompletionList{}
+	err := lsp.rpcConn.Call(context.Background(), "textDocument/completion", &completionParams, &completionList, nil)
+	if err != nil {
+		log.Errorf("call json rpc method failed. err: %s", err)
+	}
+	log.Infof("textDocument/completion: %s", pretty.Sprint(completionList))
+
 }
 
 func (lsp *LanguageServer) fatalfIfNotInit() {
@@ -177,11 +187,20 @@ func (lsp *LanguageServer) fatalfIfNotInit() {
 
 func main() {
 	ctx := context.Background()
-	languageServer := InitLanguageServer(ctx, ServerConfig{NetWork: "tcp", Address: "127.0.0.1:9877"})
+	languageServer := InitLanguageServer(ctx, ServerConfig{NetWork: "tcp", Address: "192.168.88.201:9877"})
 	languageServer.Start()
-	languageServer.InitWorkSpace("test", "file:///test")
-	languageServer.DidOpenTextDocument()
-	languageServer.ExecuteGoModTidy()
+	languageServer.InitWorkSpace(workSpaceName, workSpaceURI)
+
+	helloURI := workSpaceURI + "/hello.go"
+	modURI := workSpaceURI + "/go.mod"
+	languageServer.DidOpenTextDocument(helloURI, "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n")
+	languageServer.DidOpenTextDocument(modURI, "module hello\\n\\ngo 1.16\\n")
+
+	languageServer.DidSaveTextDocument(helloURI, "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n")
+	languageServer.DidSaveTextDocument(modURI, "module hello\\n\\ngo 1.16\\n")
+
+	languageServer.Completion(helloURI, 6, 10)
+	languageServer.ExecuteGoModTidy(workSpaceURI)
 	languageServer.Shutdown()
 
 	////在工作空间执行命令

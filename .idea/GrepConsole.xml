@@ -27,6 +27,17 @@
                 <Pins />
               </value>
             </entry>
+            <entry>
+              <key>
+                <RunConfigurationRef>
+                  <option name="icon" value="com.intellij.openapi.util.IconLoader$5@3ca83bed" />
+                  <option name="name" value="go build lsp_server.go" />
+                </RunConfigurationRef>
+              </key>
+              <value>
+                <Pins />
+              </value>
+            </entry>
           </map>
         </option>
       </PinnedGrepConsolesState>
