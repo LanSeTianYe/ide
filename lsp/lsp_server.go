@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/kr/pretty"
 	"github.com/sourcegraph/jsonrpc2"
+	"io/ioutil"
 	"lsp/logger"
 	"lsp/protocol"
 	"net"
@@ -13,7 +14,11 @@ import (
 
 const (
 	workSpaceName = "test"
-	workSpaceURI  = "file:///home/xiaotian/test"
+	workSpaceURI  = "file:///home/xiaotian/test/"
+	//workSpaceURI  = "file:///d:\\test\\"
+	codeTemplate  = "./data/template.go"
+	modTemplate   = "./data/go.mod"
+	sumTemplate   = "./data/go.sum"
 )
 
 var log = logger.Get()
@@ -93,7 +98,7 @@ func (lsp *LanguageServer) InitWorkSpace(name, uri string) {
 
 	initializeParams := protocol.InitializeParams{}
 	initializeParams.ClientInfo.Name = "test"
-	initializeParams.ClientInfo.Version = "v1.0.0"
+	initializeParams.ClientInfo.Version = "v1.0.2"
 	initializeParams.WorkspaceFolders = []protocol.WorkspaceFolder{{Name: name, URI: uri}}
 
 	initializeResult := protocol.InitializeResult{}
@@ -111,12 +116,12 @@ func (lsp *LanguageServer) InitWorkSpace(name, uri string) {
 	log.Infof("LanguageServer InitWorkSpace success")
 }
 
-func (lsp *LanguageServer) DidOpenTextDocument(url, text string) {
+func (lsp *LanguageServer) DidOpenTextDocument(url, text, languageId string) {
 	log.Infof("DidOpenTextDocument start")
 	didOpenParam := protocol.DidOpenTextDocumentParams{}
 	didOpenParam.TextDocument.URI = protocol.DocumentURI(url)
 	didOpenParam.TextDocument.Version = 0
-	didOpenParam.TextDocument.LanguageID = "go"
+	didOpenParam.TextDocument.LanguageID = languageId
 	didOpenParam.TextDocument.Text = text
 	err := lsp.rpcConn.Call(lsp.ctx, "textDocument/didOpen", didOpenParam, nil, nil)
 	if err != nil {
@@ -131,34 +136,64 @@ func (lsp *LanguageServer) DidSaveTextDocument(url, data string) {
 	didSaveParam.Text = &data
 	err := lsp.rpcConn.Call(lsp.ctx, "textDocument/didSave", didSaveParam, nil, nil)
 	if err != nil {
-		log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
+		log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didSave] failed. err: %s", err)
 	}
 
-	//didSaveParam = protocol.DidSaveTextDocumentParams{}
-	//didSaveParam.TextDocument.URI = "file://test//go.mod"
-	//data = "module hello\\n\\ngo 1.16\\n"
-	//didSaveParam.Text = &data
-	//err = lsp.rpcConn.Call(lsp.ctx, "textDocument/didSave", didSaveParam, nil, nil)
-	//if err != nil {
-	//	log.Errorf("DidSaveTextDocument call json rpc method [textDocument/didOpen] failed. err: %s", err)
-	//}
-	//log.Infof("DidSaveTextDocument success")
+	log.Infof("DidSaveTextDocument success.")
 }
 
 func (lsp *LanguageServer) ExecuteGoModTidy(uri string) {
 	log.Infof("ExecuteGoModTidy start")
+	type uris struct {
+		URIs []string `json:"URIs"`
+	}
+	u := uris{
+		URIs: []string{uri},
+	}
+
+	marshal, err := json.Marshal(u)
+	if err != nil {
+		log.Errorf("[ExecuteGoModTidy] marshal data faild. err: %s", err)
+	}
 
 	executeParams := protocol.ExecuteCommandParams{}
 	executeParams.Command = "gopls.tidy"
-	executeParams.Arguments = []json.RawMessage{[]byte(`{"URI":"file:///home/xiaotian/test"}`)}
+	executeParams.Arguments = []json.RawMessage{marshal}
 	executeParams.WorkDoneToken = "11111111111111111"
 	response := make(map[string]interface{})
-	err := lsp.rpcConn.Call(lsp.ctx, "workspace/executeCommand", &executeParams, &response, nil)
+	err = lsp.rpcConn.Call(lsp.ctx, "workspace/executeCommand", &executeParams, &response, nil)
 	if err != nil {
 		log.Errorf("call json rpc method [workspace/executeCommand gopls.tidy] failed. err: %s", err)
 	}
 
 	log.Infof("ExecuteGoModTidy success: %s", pretty.Sprint(response))
+}
+
+func (lsp *LanguageServer) ExecuteGoModGenerate(uri string) {
+	log.Infof("ExecuteGoModGenerate start")
+	type uriS struct {
+		URI string `json:"URI"`
+	}
+	u := uriS{
+		URI: uri,
+	}
+
+	marshal, err := json.Marshal(u)
+	if err != nil {
+		log.Errorf("[ExecuteGoModGenerate] marshal data faild. err: %s", err)
+	}
+
+	executeParams := protocol.ExecuteCommandParams{}
+	executeParams.Command = "gopls.generate_gopls_mod"
+	executeParams.Arguments = []json.RawMessage{marshal}
+	executeParams.WorkDoneToken = "11111111111111111"
+	response := make(map[string]interface{})
+	err = lsp.rpcConn.Call(lsp.ctx, "workspace/executeCommand", &executeParams, &response, nil)
+	if err != nil {
+		log.Errorf("call json rpc method [workspace/executeCommand gopls.generate_gopls_mod] failed. err: %s", err)
+	}
+
+	log.Infof("ExecuteGoModGenerate success: %s", pretty.Sprint(response))
 }
 
 func (lsp *LanguageServer) Completion(uri string, line uint32, character uint32) {
@@ -191,16 +226,34 @@ func main() {
 	languageServer.Start()
 	languageServer.InitWorkSpace(workSpaceName, workSpaceURI)
 
-	helloURI := workSpaceURI + "/hello.go"
-	modURI := workSpaceURI + "/go.mod"
-	languageServer.DidOpenTextDocument(helloURI, "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n")
-	languageServer.DidOpenTextDocument(modURI, "module hello\\n\\ngo 1.16\\n")
+	//languageServer.DidOpenTextDocument(workSpaceURI+"/hello/", "")
 
-	languageServer.DidSaveTextDocument(helloURI, "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello Ide!\")\n}\n")
-	languageServer.DidSaveTextDocument(modURI, "module hello\\n\\ngo 1.16\\n")
+	helloURI := workSpaceURI + "hello.go"
+	codeData := readData(codeTemplate)
+	languageServer.DidOpenTextDocument(helloURI, codeData, "go")
+	languageServer.DidSaveTextDocument(helloURI, codeData)
 
-	languageServer.Completion(helloURI, 6, 10)
-	languageServer.ExecuteGoModTidy(workSpaceURI)
+	modURI := workSpaceURI + "go.mod"
+	modData := readData(modTemplate)
+	languageServer.DidOpenTextDocument(modURI, modData, "go.mod")
+	languageServer.DidSaveTextDocument(modURI, modData)
+
+	//sumURI := workSpaceURI + "go.sum"
+	//sumData := readData(sumTemplate)
+	//languageServer.DidOpenTextDocument(sumURI, sumData, "go.sum")
+	//languageServer.DidSaveTextDocument(sumURI, sumData)
+
+	languageServer.ExecuteGoModTidy(modURI)
+
+	//fmt.
+	languageServer.Completion(helloURI, 7, 5)
+	//io_tool.
+	languageServer.Completion(helloURI, 8, 20)
+	//Per
+	languageServer.Completion(helloURI, 9, 21)
+
+	languageServer.Completion(helloURI, 10, 20)
+
 	languageServer.Shutdown()
 
 	////在工作空间执行命令
@@ -539,6 +592,14 @@ func main() {
 	////}
 	////log.Infof("initialized: %s", pretty.Sprint(response))
 
+}
+
+func readData(filePath string) string {
+	fileData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	return string(fileData)
 }
 
 type LSPHandler struct {
